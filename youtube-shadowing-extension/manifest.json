@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube 影子跟读训练器",
+  "version": "1.3.4",
+  "description": "把喜欢的 YouTube 视频变成影子跟读练习：自动切句、逐句训练、完整跟读与基础语音反馈。",
+  "minimum_chrome_version": "111",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "background": { "service_worker": "background.js" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "optional_host_permissions": ["https://*/*"],
+  "action": { "default_title": "YouTube 影子跟读" },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["main-world.js"],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": [
+        "lib/store.js",
+        "lib/bridge.js",
+        "lib/captions.js",
+        "lib/segments.js",
+        "lib/clock.js",
+        "lib/recorder.js",
+        "lib/feedback.js",
+        "lib/ai.js",
+        "lib/expressions.js",
+        "lib/styles.js",
+        "lib/ui.js",
+        "lib/state-machine.js",
+        "content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}
