@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>影子跟读 · AI 服务设置</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 16px; background: #0f0f0f; color: #f1f1f1;
+    font: 14px/1.6 "Roboto", "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+    display: flex; justify-content: center; }
+  .card { width: min(560px, 100%); background: #1c1c1c; border: 1px solid rgba(255,255,255,.14);
+    border-radius: 16px; padding: 26px 26px 22px; }
+  h1 { font-size: 18px; margin: 0 0 6px; }
+  .sub { color: #aaa; font-size: 12.5px; margin: 0 0 18px; }
+  label { display: block; font-size: 12.5px; color: #aaa; margin: 14px 0 6px; }
+  input, select { width: 100%; background: #272727; border: 1px solid rgba(255,255,255,.14);
+    color: #f1f1f1; border-radius: 8px; padding: 9px 12px; font: 500 13.5px/1.2 inherit; }
+  input:focus, select:focus { outline: none; border-color: rgba(255,255,255,.4); }
+  .keyrow { display: flex; gap: 8px; }
+  .keyrow button { flex: none; }
+  .btns { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  button { border: 1px solid rgba(255,255,255,.14); background: #272727; color: #f1f1f1;
+    border-radius: 999px; padding: 9px 16px; font: 500 13px/1 inherit; cursor: pointer; }
+  button:hover { background: #3f3f3f; }
+  button.pri { background: #f0333d; border-color: transparent; color: #fff; }
+  button.pri:hover { background: #ff4450; }
+  .status { margin-top: 14px; font-size: 13px; min-height: 20px; }
+  .status.ok { color: #7ee787; }
+  .status.err { color: #ff9c9c; }
+  .notes { margin-top: 18px; font-size: 12px; color: #aaa; background: #141414;
+    border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 12px 14px; }
+  .notes b { color: #f1f1f1; font-weight: 600; }
+  code { background: #272727; border-radius: 4px; padding: 1px 6px; font-size: 11.5px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>AI 服务设置</h1>
+    <p class="sub">采用 OpenAI 兼容协议，主流服务商均可接入。API Key 仅保存在本机浏览器中，请求只发往你填写的地址。</p>
+
+    <label>服务商预设（选择后自动填充下方字段，可再修改）</label>
+    <select id="preset">
+      <option value="">— 选择预设 —</option>
+      <option value="openai">OpenAI 官方</option>
+      <option value="zhipu">智谱 GLM（仅对话模型）</option>
+      <option value="siliconflow">硅基流动 SiliconFlow</option>
+      <option value="groq">Groq（Whisper 语音识别）</option>
+      <option value="custom">自定义</option>
+    </select>
+
+    <label>API Base URL</label>
+    <input id="baseUrl" placeholder="https://api.openai.com/v1" spellcheck="false">
+
+    <label>API Key</label>
+    <div class="keyrow">
+      <input id="apiKey" type="password" placeholder="sk-…" spellcheck="false" autocomplete="off">
+      <button id="toggleKey" type="button">显示</button>
+    </div>
+
+    <label>语音识别来源</label>
+    <select id="asrSource">
+      <option value="builtin" selected>Chrome 内置识别（默认，零配置）</option>
+      <option value="cloud">云端接口（需填写下方模型名）</option>
+    </select>
+
+    <label>语音识别模型（仅云端模式使用；/audio/transcriptions）</label>
+    <input id="asrModel" placeholder="whisper-1" spellcheck="false">
+
+    <label>对话模型（表达卡生成）</label>
+    <input id="llmModel" placeholder="gpt-4o-mini" spellcheck="false">
+
+    <div class="btns">
+      <button id="save" class="pri" type="button">保存并授权此域名</button>
+      <button id="testLLM" type="button">测试对话模型</button>
+      <button id="testASR" type="button">测试语音识别</button>
+    </div>
+    <div id="status" class="status"></div>
+
+    <div class="notes">
+      <b>兼容性说明</b>：任何提供 OpenAI 兼容接口的服务商都可以使用，例如
+      <code>OpenAI</code>、<code>智谱 GLM</code>、<code>硅基流动</code>、<code>Groq</code>、<code>DeepSeek</code> 等；
+      模型名以服务商控制台为准。<b>语音识别默认使用 Chrome 内置识别</b>，无需任何配置；
+      只有把「语音识别来源」切换为「云端接口」并填写模型名后，录音才会发送到你配置的
+      <code>/audio/transcriptions</code> 接口。<br><br>
+      <b>隐私说明</b>：保存时会请求一次对应域名的访问权限（浏览器权限弹窗）。
+      录音与字幕文本只发往你配置的接口，用于转写与表达生成；插件不上传任何数据到其他服务器，
+      API Key 仅存本地 <code>chrome.storage.local</code>。
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
